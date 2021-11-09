@@ -18,7 +18,7 @@ type Query {
   todos: [Todo!]!
 }
 
-input NewMeetup {
+input NewTodo {
   text: String!
   userId: String!
 }
