@@ -9,6 +9,7 @@ require (
 
 require (
 	github.com/agnivade/levenshtein v1.1.0 // indirect
+	github.com/go-pg/pg v8.0.7+incompatible
 	github.com/go-pg/pg/v10 v10.10.6 // indirect
 	github.com/go-pg/zerochecker v0.2.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
