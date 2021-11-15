@@ -14,29 +14,38 @@ import (
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
 	todo := &model.Todo{
-		Text:   input.Text,
-		ID:     fmt.Sprintf("T%d", rand.Int()),
-		UserID: input.UserID,
+		Name:        input.Name,
+		Description: input.Description,
+		ID:          fmt.Sprintf("T%d", rand.Int()),
+		UserID:      input.UserID,
 	}
 	r.todos = append(r.todos, todo)
 	return todo, nil
 }
 
-func (r *mutationResolver) CreateUser(ctx context.Context, username string) (*model.User, error) {
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
 	user := &model.User{
-		Name: username,
-		ID:   fmt.Sprintf("T%d", rand.Int()),
+		Name:  input.Name,
+		Email: input.Email,
+		ID:    fmt.Sprintf("T%d", rand.Int()),
 	}
-	r.users = append(r.users, user)
-	return user, nil
+	return r.UserRepo.CreateUser(user)
 }
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return r.todos, nil
+	response, err := r.TodoRepo.GetTodos()
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	return r.users, nil
+	response, err := r.UserRepo.GetUsers()
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
 }
 
 func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
@@ -62,6 +71,11 @@ type todoResolver struct{ *Resolver }
 //  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) User(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *todoResolver) Name(ctx context.Context, obj *model.Todo) (string, error) {
+	name := obj.Name
+	return name, nil
+}
+func (r *todoResolver) Description(ctx context.Context, obj *model.Todo) (string, error) {
+	description := obj.Description
+	return description, nil
 }
