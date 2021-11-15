@@ -19,8 +19,8 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 		ID:          fmt.Sprintf("T%d", rand.Int()),
 		UserID:      input.UserID,
 	}
-	r.todos = append(r.todos, todo)
-	return todo, nil
+
+	return r.TodoRepo.CreateTodo(todo)
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
@@ -49,7 +49,12 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 }
 
 func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
-	return &model.User{ID: obj.UserID, Name: "user " + obj.UserID}, nil
+
+	user, err := r.UserRepo.GetByID(obj.UserID)
+	if err != nil {
+		return nil, err
+	}
+	return &model.User{ID: user.ID, Name: user.Name, Email: user.Email}, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

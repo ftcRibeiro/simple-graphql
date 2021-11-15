@@ -18,3 +18,11 @@ func (t *TodoRepo) GetTodos() ([]*model.Todo, error) {
 
 	return todos, nil
 }
+
+func (t *TodoRepo) CreateTodo(todo *model.Todo) (*model.Todo, error) {
+	_, err := t.DB.Model(todo).Returning("*").Insert()
+	if err != nil {
+		return nil, err
+	}
+	return todo, err
+}
